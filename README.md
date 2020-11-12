@@ -1,4 +1,4 @@
-# uidai-iframe-poc
+# proxy-iframe-poc
 
 proxying UIDAI's requests to our server and opening the pages in iframe
 

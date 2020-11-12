@@ -1,5 +1,5 @@
 {
-  "name": "iframe-uidai-poc",
+  "name": "proxy-iframe-poc",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
