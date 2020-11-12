@@ -17,15 +17,15 @@ app.use(cors());
 
 
 var logger = (req, res, next) => {
-  // console.log("\n\nURL => ", req.url);
-  // console.log("\nMETHOD => ", req.method);
-  // console.log("\nREQ HEADERS => ", req.headers);
+  console.log("\n\nURL => ", req.url);
+  console.log("\nMETHOD => ", req.method);
+  console.log("\nREQ HEADERS => ", req.headers);
   next();
 };
 
 app.use('/public/*', logger, express.static(path.join(__dirname, 'public')))
 
-app.post('/download-aadhar', function(req, res) {
+app.post('/download-aadhar', logger, function(req, res) {
   console.log("INSIDE download-aadhar");
   const file = fs.createWriteStream("aadhar.zip");
   req.pipe(file);
@@ -41,31 +41,21 @@ app.get('*', logger, proxy('https://resident.uidai.gov.in', {
 
     return proxyReqOpts;
   }
-  // userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
-  //   console.log("\nRES HEADERS => ", headers);
-  //   if(headers['content-type'] === 'application/zip') {
-  //     headers['content-type']  = 'abc';
-  //   }
-  //   return headers;
-  // }
 })
 );
 
-app.post('*', logger,
-  proxy('https://resident.uidai.gov.in', {
+app.post('*', logger, proxy('https://resident.uidai.gov.in', {
     proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
-      // proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
-      //   "referer": "https://resident.uidai.gov.in",
-      //   "host": "resident.uidai.gov.in"
-      // });
+      proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
+        "referer": "https://resident.uidai.gov.in",
+        "host": "resident.uidai.gov.in"
+      });
 
       return proxyReqOpts;
     },
     userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
-      // console.log("\nRES HEADERS => ", headers);
       if(headers['content-disposition']) {
-
-        // to catch file
+        // modify HEADERS to stop file download
         headers['content-disposition'] = 'inline';
         headers['content-type'] = 'text/plain';
       }
@@ -81,15 +71,13 @@ app.post('*', logger,
             },
             body: proxyResData
           })
-            .then(function(response) {
-              //state change and go to next screen
-              console.log("DONE download-aadhar");
-              resolve("AADHAR ZIP DOWNLOADED!!!");
+            .then(function(res) {
+              console.log("AADHAR ZIP DOWNLOADED :)");
+              resolve("AADHAR ZIP DOWNLOADED :)");
             })
             .catch(function(err) {
-              //state change and go to next screen
-              console.log("FAILED download-aadhar");
-              reject("AADHAR ZIP DOWNLOAD FAILED!!!");
+              console.log("AADHAR ZIP DOWNLOAD FAILED :(");
+              reject("AADHAR ZIP DOWNLOAD FAILED :(");
             });
         });
       }
