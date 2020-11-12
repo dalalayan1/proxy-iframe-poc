@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe page POC</title>
+</head>
+<body>
+    
+    <div style="height: 100vh;width:70vw;float:left;">
+        <iframe src="/offline-kyc" frameborder="0" id="page" width="100%" height="100%"></iframe>
+    </div>
+    <div style="height: 100vh;width:28vw;float:right;display:none;" id="userForm">
+        <div>enter AADHAR: <input id="userAadhar"/></div>
+        <div>enter CAPTCHA: <input id="userCaptcha"/></div>
+        <img src="" alt="captcha-img" id="captchaImg">
+        <button onClick="refreshCaptcha()">Refresh</button>
+        <button onClick="generateAadharOTP()">send OTP</button>
+        <br>
+        <br>
+        <div>enter Share code: <input id="userShareCode" value="1234"/></div>
+        <div>enter OTP: <input id="userOTP"/></div>
+        <button onClick="downloadXML()">Download</button>
+
+    </div>
+    <script>
+        function downloadXML() {
+            let shareCode = document.getElementById("userShareCode").value,
+                otp = document.getElementById("userOTP").value;
+
+            autoDownload(shareCode, otp);
+        }
+
+        function autoDownload(shareCodeVal, otpVal) {
+            let iframe = document.getElementById('page');
+            // get form elements
+            var innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
+            let shareCode = innerDoc.querySelector("[name=zipcode]"),
+                otpField = innerDoc.querySelector("[name=totp]"),
+                smt_btn = innerDoc.querySelectorAll('.smt-totp')[2];
+
+            shareCode.value = shareCodeVal;
+            otpField.value = otpVal;    
+
+            smt_btn.click();
+        }
+
+        function refreshCaptcha() {
+            window.location.reload();
+        }
+
+        function generateAadharOTP(e) {
+            let aadharId = document.getElementById("userAadhar").value,
+                captcha = document.getElementById("userCaptcha").value;
+
+            autoFormSubmit(aadharId, captcha);
+        }
+
+        function autoFormSubmit(aadharVal, captchaVal) {
+            let iframe = document.getElementById('page');
+            // get form elements
+            var innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
+            let aadharId = innerDoc.getElementById("uid1"),
+                captcha = innerDoc.getElementById("security_code"),
+                smt_btn = innerDoc.getElementById("smt_btn");
+
+            if(aadharId) {
+
+                aadharId.value = aadharVal; //201101262964
+                captcha.value = captchaVal;
+                // debugger; //enter updated captcha;
+
+                smt_btn.click();
+
+            }
+        }
+
+        function displayUserForm(captchaImgSrc) {
+            document.getElementById("captchaImg").src = captchaImgSrc;
+            document.getElementById("userForm").style.display = 'block';
+        }
+
+        function iframeLoadCB(e) {
+            let iframe = document.getElementById('page');
+            var innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
+            let captchaImg = innerDoc.getElementById("captcha-img");
+            if(captchaImg) {
+                displayUserForm(captchaImg.src);
+            }
+        }
+
+        function docLoadCB(e) {
+            let iFrame = document.getElementById('page');
+
+            // iFrame.addEventListener('load', e => autoFormSubmit(e, iFrame));
+            iFrame.addEventListener('load', iframeLoadCB);
+        }
+
+        document.addEventListener('DOMContentLoaded', docLoadCB);
+    </script>
+</body>
+</html>

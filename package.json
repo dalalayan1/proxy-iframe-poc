@@ -1,0 +1,22 @@
+{
+  "name": "iframe-uidai-poc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "es6-promise": "^4.2.8",
+    "express": "^4.17.1",
+    "express-http-proxy": "^1.6.2",
+    "http-server": "^0.12.3",
+    "isomorphic-fetch": "^3.0.0",
+    "jsdom": "^16.4.0",
+    "spdy": "^4.0.2"
+  }
+}
