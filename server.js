@@ -13,7 +13,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
 
 var logger = (req, res, next) => {
@@ -32,28 +32,34 @@ app.post('/download-aadhar', logger, function(req, res) {
   res.send("downloaded!").status(200);
 });
 
-app.get('*', logger, proxy('https://resident.uidai.gov.in', {
+app.get('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
+  proxyReqPathResolver(req) {
+    return `${req.url.split("/uidai-proxy")[1]}`;
+  },
   proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
     proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
+      "X-Forwarded-For": "default",
       "referer": "https://resident.uidai.gov.in",
       "host": "resident.uidai.gov.in"
     });
-
     return proxyReqOpts;
   }
 })
 );
 
-app.post('*', logger, proxy('https://resident.uidai.gov.in', {
+app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
+    proxyReqPathResolver(req) {
+      return `${req.url.split("/uidai-proxy")[1]}`;
+    },
     proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
       proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
         "referer": "https://resident.uidai.gov.in",
         "host": "resident.uidai.gov.in"
       });
-
       return proxyReqOpts;
     },
     userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
+      //check HEADER to detect content as attachment
       if(headers['content-disposition']) {
         // modify HEADERS to stop file download
         headers['content-disposition'] = 'inline';
@@ -62,12 +68,14 @@ app.post('*', logger, proxy('https://resident.uidai.gov.in', {
       return headers;
     },
     userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
+      //check HEADER to detect content as attachment
       if(proxyRes.headers['content-disposition']) {
         return new Promise(function (resolve, reject) {
+          //send attachment
           fetch('https://127.0.0.1:8000/download-aadhar', {
             method: "POST",
             headers: {
-                'Content-Type': 'application/zip'
+              'Content-Type': 'application/zip'
             },
             body: proxyResData
           })
@@ -97,7 +105,7 @@ spdy.createServer(options, app).listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
 
-/* app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-}) */
+// app.listen(port, () => {
+//   console.log(`Example app listening at http://localhost:${port}`)
+// });
 

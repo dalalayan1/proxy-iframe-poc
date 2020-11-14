@@ -8,10 +8,10 @@
 <body>
     
     <div style="height: 100vh;width:70vw;float:left;">
-        <iframe src="/offline-kyc" frameborder="0" id="page" width="100%" height="100%"></iframe>
+        <iframe src="/uidai-proxy/offline-kyc" frameborder="0" id="page" width="100%" height="100%"></iframe>
     </div>
     <div style="height: 100vh;width:28vw;float:right;display:none;" id="userForm">
-        <div>enter AADHAR: <input id="userAadhar"/></div>
+        <div>enter AADHAR: <input id="userAadhar" value=""/></div>
         <div>enter CAPTCHA: <input id="userCaptcha"/></div>
         <img src="" alt="captcha-img" id="captchaImg">
         <button onClick="refreshCaptcha()">Refresh</button>
