@@ -5,37 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iframe page POC</title>
 </head>
+<style>
+    .user-form {
+        padding: 16px;
+        border: 2px solid;
+        border-radius: 20px;
+    }
+    .form-page {
+        display: none;
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+    .form-page > div {
+        padding:10px 0;
+    }
+    .form-page span {
+        font-size: 12px;
+        line-height: 16px;
+        color: rgba(0, 0, 0, 0.56);
+        display: block;
+    }
+    .form-page input {
+        font-size: 16px;
+        line-height: 24px;
+        color: rgba(0, 0, 0, 0.86);
+        outline: none;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+    .form-page input:focus {
+        border-bottom: 2px solid #1665C0;
+    }
+    .form-page button {
+        height: 48px;
+        width: 100%;
+        color: #fff;
+        background: linear-gradient(180deg, #61B72F 0%, #25A624 100%);
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        position: absolute;
+        bottom: 16px;
+        left: 0;
+        border: none;
+    }
+    .form-page span.refresh-cta {
+        display: inline;
+        color: #1665C0;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .form-page input.user-otp {
+        font-size: 24px;
+        line-height: 32px;
+        letter-spacing: 24px;
+    }
+</style>
 <body>
     
     <div style="height: 100vh;width:70vw;float:left;">
         <iframe src="/uidai-proxy/offline-kyc" frameborder="0" id="page" width="100%" height="100%"></iframe>
     </div>
-    <div style="height: 100vh;width:28vw;float:right;display:none;" id="userForm">
-        <div>enter AADHAR: <input id="userAadhar" value=""/></div>
-        <div>enter CAPTCHA: <input id="userCaptcha"/></div>
-        <img src="" alt="captcha-img" id="captchaImg">
-        <button onClick="refreshCaptcha()">Refresh</button>
-        <button onClick="generateAadharOTP()">send OTP</button>
+    <div style="height: 640px;width:360px;float:right;" class="user-form">
+        <div id="genOtpForm" class="form-page">
+            <h2>Verify your proof of identity using Aadhaar card</h2>
+            <div>
+                <span>Aadhaar Number</span>
+                <input id="userAadhar" value="961462947998" maxlength="12"/>
+            </div>
+            <div>
+                <span>Captcha</span>
+                <input id="userCaptcha" maxlength="5"/>
+                <img src="" alt="captcha-img" id="captchaImg" style="height:32px;position:absolute;">
+            </div>
+            <span class="refresh-cta" onClick="refreshCaptcha()">Refresh Captcha</span>
+            <button onClick="generateAadharOTP()">Submit OTP</button>
+        </div>
+        <div id="sendOtpForm" class="form-page">
+            <h2>Enter OTP sent to the phone number linked with your Aadhaar card</h2>
+            <div>
+                <span>OTP</span>
+                <input placeholder="••••••" id="userOTP" class="user-otp" maxlength="6"/>
+            </div>
+            <div>
+                <span>Share Code</span>
+                <input id="userShareCode" value="1234" maxlength="4" style="letter-spacing: 16px;"/>
+            </div>
+            <button onClick="downloadXML()">Download</button>
+        </div>
         <br>
+        <p id="userFormMsg"></p>
         <br>
-        <div>enter Share code: <input id="userShareCode" value="1234"/></div>
-        <div>enter OTP: <input id="userOTP"/></div>
-        <button onClick="downloadXML()">Download</button>
-
     </div>
     <script>
+
         function downloadXML() {
-            let shareCode = document.getElementById("userShareCode").value,
-                otp = document.getElementById("userOTP").value;
-
-            autoDownload(shareCode, otp);
-        }
-
-        function autoDownload(shareCodeVal, otpVal) {
-            let iframe = document.getElementById('page');
+            const shareCodeVal = document.getElementById("userShareCode").value;
+            const otpVal = document.getElementById("userOTP").value;
+            const iframe = document.getElementById('page');
             // get form elements
-            var innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
-            let shareCode = innerDoc.querySelector("[name=zipcode]"),
+            const innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document );
+            const shareCode = innerDoc.querySelector("[name=zipcode]"),
                 otpField = innerDoc.querySelector("[name=totp]"),
                 smt_btn = innerDoc.querySelectorAll('.smt-totp')[2];
 
@@ -46,17 +120,17 @@
         }
 
         function refreshCaptcha() {
-            window.location.reload();
+            window.frames['page'].contentWindow.location.reload(true);
         }
 
         function generateAadharOTP(e) {
             let aadharId = document.getElementById("userAadhar").value,
                 captcha = document.getElementById("userCaptcha").value;
 
-            autoFormSubmit(aadharId, captcha);
+            submitCaptcha(aadharId, captcha);
         }
 
-        function autoFormSubmit(aadharVal, captchaVal) {
+        function submitCaptcha(aadharVal, captchaVal) {
             let iframe = document.getElementById('page');
             // get form elements
             var innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
@@ -65,35 +139,70 @@
                 smt_btn = innerDoc.getElementById("smt_btn");
 
             if(aadharId) {
-
-                aadharId.value = aadharVal; //201101262964
+                aadharId.value = aadharVal;
                 captcha.value = captchaVal;
-                // debugger; //enter updated captcha;
 
                 smt_btn.click();
 
             }
         }
 
-        function displayUserForm(captchaImgSrc) {
+        function displayUserForm(captchaImgSrc = '', msg = '', pageId = '') {
             document.getElementById("captchaImg").src = captchaImgSrc;
-            document.getElementById("userForm").style.display = 'block';
+            document.getElementById("userFormMsg").innerText = msg;
+            document.getElementById("userCaptcha").value = '';
+            document.getElementById("userOTP").value = '';
+            document.getElementById(pageId).style.display = 'block';
         }
 
-        function iframeLoadCB(e) {
-            let iframe = document.getElementById('page');
-            var innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
-            let captchaImg = innerDoc.getElementById("captcha-img");
-            if(captchaImg) {
-                displayUserForm(captchaImg.src);
+        function handleMsgAction(iframeEle) {
+            const msgMap = {
+                INVALID_CAPTCHA: 'enter valid captcha',
+                SEND_OTP_SUCCESS: 'otp sent to your registered mobile number',
+                INVALID_OTP_LIMIT_EXCEED: 'otp/totp fail exceed',
+                INVALID_OTP: 'otp/totp fail'
             }
+            const successMsgEle = iframeEle.querySelector("#system-message .alert-message .alert-message");
+            const errorMsgEle = iframeEle.querySelector("#system-message .alert-error .alert-message");
+            let pageId;
+            if(errorMsgEle?.innerText) {
+                const errorText = errorMsgEle.innerText;
+                if(errorText.toLowerCase().includes(msgMap.INVALID_CAPTCHA) || errorText.toLowerCase().includes(msgMap.INVALID_OTP_LIMIT_EXCEED)) {
+                    pageId = 'genOtpForm';
+                }
+                else if(errorText.toLowerCase().includes(msgMap.INVALID_OTP)) {
+                    pageId = 'sendOtpForm';
+                }
+            }
+            else if(successMsgEle?.innerText) {
+                pageId = 'sendOtpForm';
+            }
+            else {
+                pageId = 'genOtpForm';
+            }
+
+            return {
+                msg: successMsgEle?.innerText || errorMsgEle?.innerText,
+                pageId
+            };
+        }
+
+        function hideUserFormPages() {
+            document.getElementById('genOtpForm').style.display = 'none';
+            document.getElementById('sendOtpForm').style.display = 'none';
+        }
+
+        function iframeLoadCB(e, iframe) {
+            const innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
+            const captchaImgEle = innerDoc.getElementById("captcha-img");
+            const { msg, pageId } = handleMsgAction(innerDoc);
+            hideUserFormPages();
+            displayUserForm(captchaImgEle?.src, msg, pageId);
         }
 
         function docLoadCB(e) {
-            let iFrame = document.getElementById('page');
-
-            // iFrame.addEventListener('load', e => autoFormSubmit(e, iFrame));
-            iFrame.addEventListener('load', iframeLoadCB);
+            const iframe = document.getElementById('page');
+            iframe.addEventListener('load', e => iframeLoadCB(e, iframe));
         }
 
         document.addEventListener('DOMContentLoaded', docLoadCB);
