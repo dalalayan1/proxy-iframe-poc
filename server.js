@@ -17,9 +17,7 @@ const app = express();
 
 
 var logger = (req, res, next) => {
-  console.log("\n\nURL => ", req.url);
-  console.log("\nMETHOD => ", req.method);
-  console.log("\nREQ HEADERS => ", req.headers);
+  console.log("\n\n=======================\nREQ IP => ", req.connection.remoteAddress, "\nREQ URL => ", req.url, "\nREQ METHOD => ", req.method, "\nREQ HEADERS => ", req.headers);
   next();
 };
 
@@ -33,18 +31,18 @@ app.post('/download-aadhar', logger, function(req, res) {
 });
 
 app.get('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
-  proxyReqPathResolver(req) {
-    return `${req.url.split("/uidai-proxy")[1]}`;
-  },
-  proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
-    proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
-      "X-Forwarded-For": "default",
-      "referer": "https://resident.uidai.gov.in",
-      "host": "resident.uidai.gov.in"
-    });
-    return proxyReqOpts;
-  }
-})
+    proxyReqPathResolver(req) {
+      return `${req.url.split("/uidai-proxy")[1]}`;
+    },
+    proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
+      proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
+        "X-Forwarded-For": "default",
+        "referer": "https://resident.uidai.gov.in",
+        "host": "resident.uidai.gov.in"
+      });
+      return proxyReqOpts;
+    }
+  })
 );
 
 app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
