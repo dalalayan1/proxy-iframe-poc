@@ -64,6 +64,11 @@
         line-height: 32px;
         letter-spacing: 24px;
     }
+    #userFormMsg {
+        position: absolute;
+        bottom: 0;
+        color: #D44C59;
+    }
 </style>
 <body>
     
@@ -149,7 +154,7 @@
 
         function displayUserForm(captchaImgSrc = '', msg = '', pageId = '') {
             document.getElementById("captchaImg").src = captchaImgSrc;
-            document.getElementById("userFormMsg").innerText = msg;
+            document.getElementById("userFormMsg").innerText = msg ? `NOTE: ${msg}` : '';
             document.getElementById("userCaptcha").value = '';
             document.getElementById("userOTP").value = '';
             document.getElementById(pageId).style.display = 'block';
@@ -158,6 +163,7 @@
         function handleMsgAction(iframeEle) {
             const msgMap = {
                 INVALID_CAPTCHA: 'enter valid captcha',
+                AADHAAR_NOT_LINKED: 'aadhaar number does not have mobile',
                 SEND_OTP_SUCCESS: 'otp sent to your registered mobile number',
                 INVALID_OTP_LIMIT_EXCEED: 'otp/totp fail exceed',
                 INVALID_OTP: 'otp/totp fail'
@@ -167,11 +173,11 @@
             let pageId;
             if(errorMsgEle?.innerText) {
                 const errorText = errorMsgEle.innerText;
-                if(errorText.toLowerCase().includes(msgMap.INVALID_CAPTCHA) || errorText.toLowerCase().includes(msgMap.INVALID_OTP_LIMIT_EXCEED)) {
-                    pageId = 'genOtpForm';
-                }
-                else if(errorText.toLowerCase().includes(msgMap.INVALID_OTP)) {
+                if(errorText.toLowerCase().includes(msgMap.INVALID_OTP)) {
                     pageId = 'sendOtpForm';
+                }
+                else {
+                    pageId = 'genOtpForm'; 
                 }
             }
             else if(successMsgEle?.innerText) {
