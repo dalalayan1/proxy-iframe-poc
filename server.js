@@ -37,6 +37,10 @@ app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
       console.log("\nHEADERS inside REQ(send-ping) => ", req.headers);
       return `/receive-ping`;
     },
+    proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
+      console.log("\nHEADERS inside REQ proxyReqOptDecorator(send-ping) => ", proxyReqOpts.headers);
+      return proxyReqOpts;
+    },
     userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
       console.log("\n\nREQ IP inside RES(send-ping) => ", userReq.connection.remoteAddress);
       console.log("\nHEADERS inside RES(send-ping) => ", proxyRes.headers);
