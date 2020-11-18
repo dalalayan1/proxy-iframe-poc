@@ -109,7 +109,7 @@ app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
   })
 );
 
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 var options = {
   key: fs.readFileSync(__dirname + "/server.key"),
@@ -117,10 +117,10 @@ var options = {
 };
 
 // spdy.createServer(options, app).listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${process.env.PORT || port}`)
+//   console.log(`Example app listening at http://localhost:${port}`)
 // });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${process.env.PORT || port}`)
+  console.log(`Example app listening at http://localhost:${port}`)
 });
 
