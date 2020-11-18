@@ -30,6 +30,7 @@ app.post('/download-aadhar', logger, function(req, res) {
   res.send("downloaded!").status(200);
 });
 
+//send APP
 app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
     proxyReqPathResolver(req) {
       console.log("\n\nREQ IP(send-ping) => ", req.connection.remoteAddress);
@@ -37,14 +38,16 @@ app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
     },
     userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
       console.log("\n\nREQ IP inside RES(send-ping) => ", userReq.connection.remoteAddress);
-      console.log("\nX-forwarded-for header inside RES(send-ping) => ", proxyRes.headers['X-Forwarded-For']);
+      console.log("\nX-forwarded-for header inside RES(send-ping) => ", proxyRes.headers);
       return proxyResData;
     }
   })
 );
 
+//receive APP
 app.get('/receive-ping', logger, function(req, res) {
   console.log("\n\nREQ IP(receive-ping) => ", req.connection.remoteAddress);
+  console.log("\nX-forwarded-for header inside REQ(receive-ping) => ", req.headers);
   res.send("pinged!").status(200);
 });
 
