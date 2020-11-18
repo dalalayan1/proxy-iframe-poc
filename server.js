@@ -32,6 +32,7 @@ app.post('/download-aadhar', logger, function(req, res) {
 
 app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
     proxyReqPathResolver(req) {
+      console.log("\n\nREQ IP(send-ping) => ", req.connection.remoteAddress);
       return `/receive-ping`;
     },
     userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
