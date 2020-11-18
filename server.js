@@ -40,6 +40,10 @@ app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
         "host": "requestbin.net"
       });
       return proxyReqOpts;
+    },
+    userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
+      console.log("\n\nREQ IP inside RES(request-bin) => ", userReq.connection.remoteAddress);
+      return proxyResData;
     }
   })
 );
