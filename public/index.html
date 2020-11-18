@@ -10,6 +10,7 @@
         padding: 16px;
         border: 2px solid;
         border-radius: 20px;
+        position: relative;
     }
     .form-page {
         display: none;
@@ -66,7 +67,7 @@
     }
     #userFormMsg {
         position: absolute;
-        bottom: 0;
+        bottom: 100px;
         color: #D44C59;
     }
 </style>
@@ -101,6 +102,9 @@
                 <input id="userShareCode" value="1234" maxlength="4" style="letter-spacing: 16px;"/>
             </div>
             <button onClick="downloadXML()">Download</button>
+        </div>
+        <div id="errorFallback" class="form-page">
+            <h2>SOMETHING WENT WRONG!!</h2>
         </div>
         <br>
         <p id="userFormMsg"></p>
@@ -138,7 +142,7 @@
         function submitCaptcha(aadharVal, captchaVal) {
             let iframe = document.getElementById('page');
             // get form elements
-            var innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
+            var innerDoc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
             let aadharId = innerDoc.getElementById("uid1"),
                 captcha = innerDoc.getElementById("security_code"),
                 smt_btn = innerDoc.getElementById("smt_btn");
@@ -152,7 +156,7 @@
             }
         }
 
-        function displayUserForm(captchaImgSrc = '', msg = '', pageId = '') {
+        function displayUserForm(captchaImgSrc = '', msg = '', pageId = 'errorFallback') {
             document.getElementById("captchaImg").src = captchaImgSrc;
             document.getElementById("userFormMsg").innerText = msg ? `NOTE: ${msg}` : '';
             document.getElementById("userCaptcha").value = '';
@@ -184,7 +188,7 @@
                 pageId = 'sendOtpForm';
             }
             else {
-                pageId = 'genOtpForm';
+                pageId = 'errorFallback';
             }
 
             return {
@@ -196,9 +200,11 @@
         function hideUserFormPages() {
             document.getElementById('genOtpForm').style.display = 'none';
             document.getElementById('sendOtpForm').style.display = 'none';
+            document.getElementById('errorFallback').style.display = 'none';
         }
 
         function iframeLoadCB(e, iframe) {
+            console.log("LOAD iframe");
             const innerDoc = iframe.contentDocument || ( iframe.contentWindow && iframe.contentWindow.document);
             const captchaImgEle = innerDoc.getElementById("captcha-img");
             const { msg, pageId } = handleMsgAction(innerDoc);
