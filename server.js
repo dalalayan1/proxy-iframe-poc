@@ -8,6 +8,7 @@ var path = require('path');
 const express = require('express');
 let cors = require('cors');
 const { start } = require('repl');
+const RequestIp = require('@supercharge/request-ip')
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -34,6 +35,7 @@ app.post('/download-aadhar', logger, function(req, res) {
 app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
     proxyReqPathResolver(req) {
       console.log("\n\nREQ IP(send-ping) => ", req.connection.remoteAddress);
+      console.log("\n\nREQ IP(RequestIp)(send-ping) => ", RequestIp.getClientIp(req));
       console.log("\nHEADERS inside REQ(send-ping) => ", req.headers);
       return `/receive-ping`;
     },
@@ -47,6 +49,7 @@ app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
     },
     userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
       console.log("\n\nREQ IP inside RES(send-ping) => ", userReq.connection.remoteAddress);
+      console.log("\n\nREQ IP inside RES(RequestIp)(send-ping) => ", RequestIp.getClientIp(userReq));
       console.log("\nHEADERS inside RES(send-ping) => ", proxyRes.headers);
       return proxyResData;
     }
@@ -56,6 +59,7 @@ app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
 //receive APP
 app.get('/receive-ping', logger, function(req, res) {
   console.log("\n\nREQ IP(receive-ping) => ", req.connection.remoteAddress);
+  console.log("\n\nREQ IP(RequestIp)(receive-ping) => ", RequestIp.getClientIp(req));
   console.log("\nHEADERS inside REQ(receive-ping) => ", req.headers);
   res.send("pinged!").status(200);
 });
