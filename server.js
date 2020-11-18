@@ -38,6 +38,10 @@ app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
       return `/receive-ping`;
     },
     proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
+      proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
+        "referer": "https://uidai-proxy.herokuapp.com",
+        "host": "uidai-proxy.herokuapp.com"
+      });
       console.log("\nHEADERS inside REQ proxyReqOptDecorator(send-ping) => ", proxyReqOpts.headers);
       return proxyReqOpts;
     },
