@@ -117,10 +117,10 @@ var options = {
 };
 
 // spdy.createServer(options, app).listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`)
+//   console.log(`Example app listening at http://localhost:${process.env.PORT || port}`)
 // });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Example app listening at http://localhost:${process.env.PORT || port}`)
 });
 
