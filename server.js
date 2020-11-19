@@ -83,19 +83,51 @@ app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
   })
 );
 
-app.get('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
+app.get(
+  "/uidai-proxy/*",
+  proxy("https://resident.uidai.gov.in", {
     proxyReqPathResolver(req) {
+      if (req.url.includes("offline-kyc")) {
+        log.warn(
+          "\n\nREQ IP inside proxyReqPathResolver(remoteAddress) => ",
+          req.connection.remoteAddress,
+          "\nREQ IP inside proxyReqPathResolver(RequestIp) => ",
+          RequestIp.getClientIp(req),
+          "\nREQ METHOD inside proxyReqPathResolver => ",
+          req.method,
+          "\nREQ HEADERS inside proxyReqPathResolver => ",
+          req.headers
+        );
+      }
       return `${req.url.split("/uidai-proxy")[1]}`;
     },
-    proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
-      proxyReqOpts.headers = Object.assign({}, proxyReqOpts.headers, {
-        "referer": "https://resident.uidai.gov.in",
-        "host": "resident.uidai.gov.in"
+    proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
+      srcReq.headers = Object.assign({}, srcReq.headers, {
+        "X-Forwarded-For": RequestIp.getClientIp(srcReq),
+        "Content-Type": "application/x-www-form-urlencoded",
+        referer: "https://resident.uidai.gov.in",
+        host: "resident.uidai.gov.in"
       });
+      log.warn("\n\nmodified REQ HEADERS inside proxyReqOptDecorator");
       return proxyReqOpts;
     },
-    userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
-      console.log("\n\nREQ IP inside RES => ", userReq.connection.remoteAddress);
+    proxyErrorHandler: function(err, res, next) {
+      log.warn("OKYC RESPONSE ERROR => ", err);
+      next(err);
+    },
+    userResDecorator: function(proxyRes, proxyResData, req, res) {
+      if (req.url.includes("offline-kyc")) {
+        log.warn(
+          "\n\nREQ IP inside userResDecorator(remoteAddress) => ",
+          req.connection.remoteAddress,
+          "\nREQ IP inside userResDecorator(RequestIp) => ",
+          RequestIp.getClientIp(req),
+          "\nREQ METHOD inside userResDecorator => ",
+          req.method,
+          "\nREQ HEADERS inside userResDecorator => ",
+          req.headers
+        );
+      }
       return proxyResData;
     }
   })
