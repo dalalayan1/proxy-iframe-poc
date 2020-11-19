@@ -88,7 +88,7 @@ app.get(
   proxy("https://resident.uidai.gov.in", {
     proxyReqPathResolver(req) {
       if (req.url.includes("offline-kyc")) {
-        log.warn(
+        console.log(
           "\n\nREQ IP inside proxyReqPathResolver(remoteAddress) => ",
           req.connection.remoteAddress,
           "\nREQ IP inside proxyReqPathResolver(RequestIp) => ",
@@ -108,16 +108,16 @@ app.get(
         referer: "https://resident.uidai.gov.in",
         host: "resident.uidai.gov.in"
       });
-      log.warn("\n\nmodified REQ HEADERS inside proxyReqOptDecorator");
+      console.log("\n\nmodified REQ HEADERS inside proxyReqOptDecorator");
       return proxyReqOpts;
     },
     proxyErrorHandler: function(err, res, next) {
-      log.warn("OKYC RESPONSE ERROR => ", err);
+      console.log("OKYC RESPONSE ERROR => ", err);
       next(err);
     },
     userResDecorator: function(proxyRes, proxyResData, req, res) {
       if (req.url.includes("offline-kyc")) {
-        log.warn(
+        console.log(
           "\n\nREQ IP inside userResDecorator(remoteAddress) => ",
           req.connection.remoteAddress,
           "\nREQ IP inside userResDecorator(RequestIp) => ",
