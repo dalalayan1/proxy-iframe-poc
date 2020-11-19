@@ -8,7 +8,7 @@ var path = require('path');
 const express = require('express');
 let cors = require('cors');
 const { start } = require('repl');
-const RequestIp = require('@supercharge/request-ip')
+const RequestIp = require('@supercharge/request-ip');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
