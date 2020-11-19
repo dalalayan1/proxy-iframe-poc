@@ -84,6 +84,8 @@ app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
   })
 );
 
+app.use((error, req, res, next) => next());
+
 app.get(
   "/uidai-proxy/*",
   proxy("https://resident.uidai.gov.in", {
