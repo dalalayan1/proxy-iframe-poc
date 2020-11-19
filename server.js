@@ -103,8 +103,8 @@ app.get(
     },
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
       srcReq.headers = Object.assign({}, srcReq.headers, {
-        "X-Forwarded-For": RequestIp.getClientIp(srcReq),
-        "Content-Type": "application/x-www-form-urlencoded",
+        // "X-Forwarded-For": RequestIp.getClientIp(srcReq),
+        // "Content-Type": "application/x-www-form-urlencoded",
         referer: "https://resident.uidai.gov.in",
         host: "resident.uidai.gov.in"
       });
@@ -191,9 +191,6 @@ var options = {
 //   console.log(`Example app listening at http://localhost:${port}`)
 // });
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
-
-server.timeout = 10000;
-
