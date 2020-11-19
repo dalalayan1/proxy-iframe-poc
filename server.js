@@ -9,6 +9,7 @@ const express = require('express');
 let cors = require('cors');
 const { start } = require('repl');
 const RequestIp = require('@supercharge/request-ip');
+const bodyParser = require("body-parser");
 
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -179,6 +180,9 @@ app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
     }
   })
 );
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const port = process.env.PORT || 8000;
 
