@@ -20,11 +20,11 @@ app.use(cors());
 
 var logger = (req, res, next) => {
 
-  console.log(
-    "\n\nreq (Headers) before START => ",
-    req.headers,
-    "\nreq(rawHeaders) before START => ", req['rawHeaders'].join("=======")
-  );
+  // console.log(
+  //   "\n\nreq (Headers) before START => ",
+  //   req.headers,
+  //   "\nreq(rawHeaders) before START => ", req['rawHeaders'].join("=======")
+  // );
 
   req.headers = Object.assign({}, req.headers, {
     "referer": "https://resident.uidai.gov.in",
@@ -117,7 +117,7 @@ app.get("/abc", logger,function(req, res) {
 app.get(
   "/uidai-proxy/*", logger,
   proxy("https://resident.uidai.gov.in", {
-    proxyReqPathResolver(req) {
+    // proxyReqPathResolver(req) {
       // req.headers = Object.assign({}, req.headers, {
       //   "referer": "https://resident.uidai.gov.in",
       //   "host": "resident.uidai.gov.in",
@@ -130,21 +130,21 @@ app.get(
       //   "x-request-start": "",
       //   "total-route-time": ""
       // });
-      if (req.url.includes("offline-kyc")) {
-        console.log(
-          "\n\nproxyReqPathResolver(remoteAddress) => ",
-          req.connection.remoteAddress,
-          "\nproxyReqPathResolver(RequestIp) => ",
-          RequestIp.getClientIp(req),
-          "\nproxyReqPathResolver(Method) => ",
-          req.method,
-          "\nproxyReqPathResolver(Headers) => ",
-          req.headers,
-          "\nproxyReqOptDecorator(rawHeaders) => ", req['rawHeaders'].join("=======")
-        );
-      }
-      return `${req.url.split("/uidai-proxy")[1]}`;
-    },
+      // if (req.url.includes("offline-kyc")) {
+      //   console.log(
+      //     "\n\nproxyReqPathResolver(remoteAddress) => ",
+      //     req.connection.remoteAddress,
+      //     "\nproxyReqPathResolver(RequestIp) => ",
+      //     RequestIp.getClientIp(req),
+      //     "\nproxyReqPathResolver(Method) => ",
+      //     req.method,
+      //     "\nproxyReqPathResolver(Headers) => ",
+      //     req.headers,
+      //     "\nproxyReqOptDecorator(rawHeaders) => ", req['rawHeaders'].join("=======")
+      //   );
+      // }
+    //   return `${req.url.split("/uidai-proxy")[1]}`;
+    // },
     // proxyReqOptDecorator: function(req, srcReq) {
     //   let modifiedReq = req;
     //   modifiedReq.headers = Object.assign({}, req.headers, {
