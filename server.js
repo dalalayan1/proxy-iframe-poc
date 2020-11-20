@@ -19,6 +19,13 @@ const app = express();
 
 
 var logger = (req, res, next) => {
+
+  console.log(
+    "\n\nreq (Headers) before START => ",
+    req.headers,
+    "\nreq(rawHeaders) before START => ", req['rawHeaders'].join("=======")
+  );
+
   req.headers = Object.assign({}, req.headers, {
     "referer": "https://uidai-proxy.herokuapp.com",
     "host": "uidai-proxy.herokuapp.com",
