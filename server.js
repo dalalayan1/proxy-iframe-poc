@@ -123,7 +123,7 @@ app.get(
       delete req.headers['connect-time'];
       delete req.headers['x-request-start'];
       delete req.headers['total-route-time'];
-      req.headers = Object.assign({}, req.headers, {
+      srcReq.headers = Object.assign({}, srcReq.headers, {
         "referer": "https://resident.uidai.gov.in",
         "host": "resident.uidai.gov.in",
         "x-forwarded-for": "",
