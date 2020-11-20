@@ -20,6 +20,18 @@ const app = express();
 
 var logger = (req, res, next) => {
   console.log("\n\nREQ HEADERS before start => ", req.headers);
+  req.headers = Object.assign({}, req.headers, {
+    "referer": "https://resident.uidai.gov.in",
+    "host": "resident.uidai.gov.in",
+    "x-forwarded-for": "",
+    "x-forwarded-port": "",
+    "x-request-id": "",
+    "x-forwarded-proto": "",
+    "via": "",
+    "connect-time": "",
+    "x-request-start": "",
+    "total-route-time": ""
+  });
   next();
 };
 
@@ -119,22 +131,22 @@ app.get(
       }
       return `${req.url.split("/uidai-proxy")[1]}`;
     },
-    proxyReqOptDecorator: function(req, srcReq) {
-      let modifiedReq = req;
-      modifiedReq.headers = Object.assign({}, req.headers, {
-        "referer": "https://resident.uidai.gov.in",
-        "host": "resident.uidai.gov.in",
-        "x-forwarded-for": "",
-        "x-forwarded-port": "",
-        "x-request-id": "",
-        "x-forwarded-proto": "",
-        "via": "",
-        "connect-time": "",
-        "x-request-start": "",
-        "total-route-time": ""
-      });
-      return modifiedReq;
-    },
+    // proxyReqOptDecorator: function(req, srcReq) {
+    //   let modifiedReq = req;
+    //   modifiedReq.headers = Object.assign({}, req.headers, {
+    //     "referer": "https://resident.uidai.gov.in",
+    //     "host": "resident.uidai.gov.in",
+    //     "x-forwarded-for": "",
+    //     "x-forwarded-port": "",
+    //     "x-request-id": "",
+    //     "x-forwarded-proto": "",
+    //     "via": "",
+    //     "connect-time": "",
+    //     "x-request-start": "",
+    //     "total-route-time": ""
+    //   });
+    //   return req;
+    // },
     proxyErrorHandler: function(err, res, next) {
       console.log("\n\nOKYC RESPONSE ERROR => ", err);
       next(err);
