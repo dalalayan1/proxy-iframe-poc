@@ -19,7 +19,7 @@ const app = express();
 
 
 var logger = (req, res, next) => {
-  // console.log("\n\n=======================\nREQ IP => ", req.connection.remoteAddress, "\nREQ URL => ", req.url, "\nREQ METHOD => ", req.method, "\nREQ HEADERS => ", req.headers);
+  console.log("\n\nREQ HEADERS before start => ", req.headers);
   next();
 };
 
@@ -89,9 +89,21 @@ app.post('/download-aadhar', logger, function(req, res) {
 // });
 
 app.get(
-  "/uidai-proxy/*",
+  "/uidai-proxy/*", logger,
   proxy("https://resident.uidai.gov.in", {
     proxyReqPathResolver(req) {
+      req.headers = Object.assign({}, req.headers, {
+        "referer": "https://resident.uidai.gov.in",
+        "host": "resident.uidai.gov.in",
+        "x-forwarded-for": "",
+        "x-forwarded-port": "",
+        "x-request-id": "",
+        "x-forwarded-proto": "",
+        "via": "",
+        "connect-time": "",
+        "x-request-start": "",
+        "total-route-time": ""
+      });
       if (req.url.includes("offline-kyc")) {
         console.log(
           "\n\nproxyReqPathResolver(remoteAddress) => ",
