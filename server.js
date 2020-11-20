@@ -123,6 +123,9 @@ app.get(
       delete req.headers['connect-time'];
       delete req.headers['x-request-start'];
       delete req.headers['total-route-time'];
+      req.headers = Object.assign({}, req.headers, {
+        "x-forwarded-for": "abc"
+      });
       return req;
     },
     proxyErrorHandler: function(err, res, next) {
