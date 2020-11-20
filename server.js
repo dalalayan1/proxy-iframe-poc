@@ -116,7 +116,7 @@ app.get("/abc", logger,function(req, res) {
 
 app.get(
   "/uidai-proxy/*", logger,
-  proxy("https://resident.uidai.gov.in", {
+  proxy("https://www.google.com", {
     proxyReqPathResolver(req) {
       // req.headers = Object.assign({}, req.headers, {
       //   "referer": "https://resident.uidai.gov.in",
@@ -143,7 +143,7 @@ app.get(
       //     "\nproxyReqOptDecorator(rawHeaders) => ", req['rawHeaders'].join("=======")
       //   );
       // }
-      return `${req.url.split("/uidai-proxy")[1]}`;
+      return ``;
     },
     // proxyReqOptDecorator: function(req, srcReq) {
     //   let modifiedReq = req;
