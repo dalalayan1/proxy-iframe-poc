@@ -107,6 +107,7 @@ app.get(
       return `${req.url.split("/uidai-proxy")[1]}`;
     },
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
+      console.log("\n\nRAW HEADERS inside proxyReqOptDecorator => ", proxyReqOpts['rawHeaders']);
       return proxyReqOpts;
     },
     proxyErrorHandler: function(err, res, next) {
