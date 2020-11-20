@@ -1,35 +1,35 @@
 var proxy = require('express-http-proxy');
 var fetch = require('isomorphic-fetch');
 var spdy = require("spdy");
-​
+
 var fs = require('fs');
 var path = require('path');
-​
+
 const express = require('express');
 let cors = require('cors');
 const { start } = require('repl');
 const RequestIp = require('@supercharge/request-ip');
 const bodyParser = require("body-parser");
-​
+
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-​
+
 const app = express();
-​
+
 // app.use(cors());
-​
-​
+
+
 var logger = (req, res, next) => {
   // console.log("\n\n=======================\nREQ IP => ", req.connection.remoteAddress, "\nREQ URL => ", req.url, "\nREQ METHOD => ", req.method, "\nREQ HEADERS => ", req.headers);
   next();
 };
-​
+
 app.post('/download-aadhar', logger, function(req, res) {
   console.log("INSIDE download-aadhar");
   const file = fs.createWriteStream("aadhar.zip");
   req.pipe(file);
   res.send("downloaded!").status(200);
 });
-​
+
 //send APP
 // app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
 //     proxyReqPathResolver(req) {
@@ -54,7 +54,7 @@ app.post('/download-aadhar', logger, function(req, res) {
 //     }
 //   })
 // );
-​
+
 // //receive APP
 // app.get('/receive-ping', logger, function(req, res) {
 //   console.log("\n\nREQ IP(receive-ping) => ", req.connection.remoteAddress);
@@ -62,8 +62,8 @@ app.post('/download-aadhar', logger, function(req, res) {
 //   console.log("\nHEADERS inside REQ(receive-ping) => ", req.headers);
 //   res.send("pinged!").status(200);
 // });
-​
-​
+
+
 // app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
 //     proxyReqPathResolver(req) {
 //       return `/r/1hahg8g1`;
@@ -81,13 +81,13 @@ app.post('/download-aadhar', logger, function(req, res) {
 //     }
 //   })
 // );
-​
+
 // app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Origin', '*');
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 //   next();
 // });
-​
+
 app.get(
   "/uidai-proxy/*",
   proxy("https://resident.uidai.gov.in", {
@@ -143,7 +143,7 @@ app.get(
     // }
   })
 );
-​
+
 app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
     proxyReqPathResolver(req) {
       return `${req.url.split("/uidai-proxy")[1]}`;
@@ -190,24 +190,24 @@ app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
     }
   })
 );
-​
-​
+
+
 app.use('/public/*', logger, express.static(path.join(__dirname, 'public')))
-​
+
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
-​
+
 const port = process.env.PORT || 8000;
-​
+
 var options = {
   key: fs.readFileSync(__dirname + "/server.key"),
   cert: fs.readFileSync(__dirname + "/server.crt")
 };
-​
+
 // spdy.createServer(options, app).listen(port, () => {
 //   console.log(`Example app listening at http://localhost:${port}`)
 // });
-​
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
