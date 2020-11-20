@@ -112,6 +112,7 @@ app.get(
       srcReq.headers = Object.assign({}, srcReq.headers, {
         // "X-Forwarded-For": RequestIp.getClientIp(srcReq),
         // "Content-Type": "application/x-www-form-urlencoded",
+        'accept-encoding': 'br',
         referer: "https://resident.uidai.gov.in",
         host: "resident.uidai.gov.in"
       });
