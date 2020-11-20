@@ -73,9 +73,9 @@
 </style>
 <body>
     
-    <div style="height: 100vh;width:70vw;float:left;">
+    <!-- <div style="height: 100vh;width:70vw;float:left;">
         <iframe src="/uidai-proxy/offline-kyc" frameborder="0" id="page" width="100%" height="100%"></iframe>
-    </div>
+    </div> -->
     <div style="height: 640px;width:360px;float:right;" class="user-form">
         <div id="genOtpForm" class="form-page">
             <h2>Verify your proof of identity using Aadhaar card</h2>
@@ -110,6 +110,7 @@
         <p id="userFormMsg"></p>
         <br>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <script>
 
         function downloadXML() {
@@ -213,8 +214,19 @@
         }
 
         function docLoadCB(e) {
-            const iframe = document.getElementById('page');
-            iframe.addEventListener('load', e => iframeLoadCB(e, iframe));
+            // const iframe = document.getElementById('page');
+            // iframe.addEventListener('load', e => iframeLoadCB(e, iframe));
+
+            axios
+                .get("/uidai-proxy/offline-kyc", {
+                headers: {}
+                })
+                .then(data => {
+                    console.log("PROXY API SUCCESS => ", data);
+                })
+                .catch(error => {
+                    console.log("PROXY API ERROR => ", error)
+                });
         }
 
         document.addEventListener('DOMContentLoaded', docLoadCB);
