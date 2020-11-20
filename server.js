@@ -23,8 +23,6 @@ var logger = (req, res, next) => {
   next();
 };
 
-app.use('/public/*', logger, express.static(path.join(__dirname, 'public')))
-
 app.post('/download-aadhar', logger, function(req, res) {
   console.log("INSIDE download-aadhar");
   const file = fs.createWriteStream("aadhar.zip");
@@ -89,8 +87,6 @@ app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 //   next();
 // });
-
-app.use(bodyParser);
 
 app.get(
   "/uidai-proxy/*",
@@ -181,6 +177,9 @@ app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
     }
   })
 );
+
+
+app.use('/public/*', logger, express.static(path.join(__dirname, 'public')))
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
