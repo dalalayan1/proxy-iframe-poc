@@ -115,8 +115,15 @@ app.get(
       }
       return `${req.url.split("/uidai-proxy")[1]}`;
     },
-    proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
-      return proxyReqOpts;
+    proxyReqOptDecorator: function(req, srcReq) {
+      delete req.headers['x-forwarded-for'];
+      delete req.headers['x-request-id'];
+      delete req.headers['x-forwarded-proto'];
+      delete req.headers['via'];
+      delete req.headers['connect-time'];
+      delete req.headers['x-request-start'];
+      delete req.headers['total-route-time'];
+      return req;
     },
     proxyErrorHandler: function(err, res, next) {
       console.log("\n\nOKYC RESPONSE ERROR => ", err);
