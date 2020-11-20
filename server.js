@@ -20,8 +20,8 @@ const app = express();
 
 var logger = (req, res, next) => {
   req.headers = Object.assign({}, req.headers, {
-    "referer": "https://resident.uidai.gov.in",
-    "host": "resident.uidai.gov.in",
+    "referer": "https://uidai-proxy.herokuapp.com",
+    "host": "uidai-proxy.herokuapp.com",
     "connection": "keep-alive"
   });
   delete req.headers.via;
@@ -33,7 +33,7 @@ var logger = (req, res, next) => {
   delete req.headers['x-request-id'];
   delete req.headers['total-route-time'];
 
-  req.rawHeaders = "Host=======resident.uidai.gov.in=======Connection=======close=======Upgrade-Insecure-Requests=======1=======User-Agent=======Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36=======Accept=======text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9=======Sec-Fetch-Site=======same-origin=======Sec-Fetch-Mode=======navigate=======Sec-Fetch-Dest=======iframe=======Referer=======https://resident.uidai.gov.in=======Accept-Encoding=======gzip, deflate, br=======Accept-Language=======en-GB,en-US;q=0.9,en;q=0.8".split("=======");
+  req.rawHeaders = "Host=======uidai-proxy.herokuapp.com=======Connection=======close=======Upgrade-Insecure-Requests=======1=======User-Agent=======Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36=======Accept=======text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9=======Sec-Fetch-Site=======same-origin=======Sec-Fetch-Mode=======navigate=======Sec-Fetch-Dest=======iframe=======Referer=======https://uidai-proxy.herokuapp.com=======Accept-Encoding=======gzip, deflate, br=======Accept-Language=======en-GB,en-US;q=0.9,en;q=0.8".split("=======");
 
   next();
 };
@@ -44,6 +44,10 @@ app.post('/download-aadhar', logger, function(req, res) {
   req.pipe(file);
   res.send("downloaded!").status(200);
 });
+
+app.get("/abc", logger,function(req, res) {
+  res.send("hi!").status(200);
+})
 
 //send APP
 // app.get('/send-ping', logger, proxy('https://uidai-proxy.herokuapp.com', {
@@ -105,7 +109,7 @@ app.post('/download-aadhar', logger, function(req, res) {
 
 app.get(
   "/uidai-proxy/*", logger,
-  proxy("https://resident.uidai.gov.in", {
+  proxy("https://uidai-proxy.herokuapp.com", {
     proxyReqPathResolver(req) {
       // req.headers = Object.assign({}, req.headers, {
       //   "referer": "https://resident.uidai.gov.in",
@@ -132,7 +136,7 @@ app.get(
           "\nproxyReqOptDecorator(rawHeaders) => ", req['rawHeaders'].join("=======")
         );
       }
-      return `${req.url.split("/uidai-proxy")[1]}`;
+      return `/abc`;
     },
     // proxyReqOptDecorator: function(req, srcReq) {
     //   let modifiedReq = req;
