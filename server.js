@@ -90,6 +90,7 @@ app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
 //   next();
 // });
 
+
 app.get(
   "/uidai-proxy/*",
   proxy("https://resident.uidai.gov.in", {
@@ -112,7 +113,7 @@ app.get(
       srcReq.headers = Object.assign({}, srcReq.headers, {
         // "X-Forwarded-For": RequestIp.getClientIp(srcReq),
         // "Content-Type": "application/x-www-form-urlencoded",
-        'accept-encoding': 'br',
+        'accept-encoding': '',
         referer: "https://resident.uidai.gov.in",
         host: "resident.uidai.gov.in"
       });
