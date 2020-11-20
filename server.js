@@ -22,7 +22,8 @@ var logger = (req, res, next) => {
   console.log("\n\nREQ HEADERS before start => ", req.headers);
   req.headers = Object.assign({}, req.headers, {
     "referer": "https://resident.uidai.gov.in",
-    "host": "resident.uidai.gov.in"
+    "host": "resident.uidai.gov.in",
+    "connection": "keep-alive"
   });
   delete req.headers.via;
   delete req.headers['connect-time'];
