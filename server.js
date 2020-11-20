@@ -92,6 +92,14 @@ app.get(
   "/uidai-proxy/*",
   proxy("https://resident.uidai.gov.in", {
     proxyReqPathResolver(req) {
+      delete req.headers['x-forwarded-for'];
+      delete req.headers['x-request-id'];
+      delete req.headers['x-forwarded-proto'];
+      delete req.headers['via'];
+      delete req.headers['connect-time'];
+      delete req.headers['x-request-start'];
+      delete req.headers['total-route-time'];
+
       if (req.url.includes("offline-kyc")) {
         console.log(
           "\n\nREQ IP inside proxyReqPathResolver(remoteAddress) => ",
