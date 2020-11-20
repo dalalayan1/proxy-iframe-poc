@@ -110,17 +110,6 @@ app.get(
       return `${req.url.split("/uidai-proxy")[1]}`;
     },
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
-      srcReq.headers = Object.assign({}, srcReq.headers, {
-        "x-forwarded-for": RequestIp.getClientIp(srcReq),
-        "X-Forwarded-For": RequestIp.getClientIp(srcReq),
-        "content-type": "application/x-www-form-urlencoded",
-        "Content-Type": "application/x-www-form-urlencoded",
-        connection: 'keep-alive',
-        'Connection': 'keep-alive',
-        referer: "https://resident.uidai.gov.in",
-        host: "resident.uidai.gov.in"
-      });
-      console.log("\n\nmodified REQ HEADERS inside proxyReqOptDecorator");
       return proxyReqOpts;
     },
     proxyErrorHandler: function(err, res, next) {
