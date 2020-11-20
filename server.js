@@ -27,8 +27,8 @@ var logger = (req, res, next) => {
   );
 
   req.headers = Object.assign({}, req.headers, {
-    "referer": "https://uidai-proxy.herokuapp.com",
-    "host": "uidai-proxy.herokuapp.com",
+    "referer": "https://resident.uidai.gov.in",
+    "host": "resident.uidai.gov.in",
     "connection": "keep-alive"
   });
   // delete req.headers.via;
@@ -116,7 +116,7 @@ app.get("/abc", logger,function(req, res) {
 
 app.get(
   "/uidai-proxy/*", logger,
-  proxy("https://uidai-proxy.herokuapp.com", {
+  proxy("https://resident.uidai.gov.in", {
     proxyReqPathResolver(req) {
       // req.headers = Object.assign({}, req.headers, {
       //   "referer": "https://resident.uidai.gov.in",
@@ -143,7 +143,7 @@ app.get(
           "\nproxyReqOptDecorator(rawHeaders) => ", req['rawHeaders'].join("=======")
         );
       }
-      return `/abc`;
+      return `${req.url.split("/uidai-proxy")[1]}`;
     },
     // proxyReqOptDecorator: function(req, srcReq) {
     //   let modifiedReq = req;
