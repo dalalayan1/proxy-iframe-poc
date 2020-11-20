@@ -101,13 +101,13 @@ app.get(
           "\nREQ METHOD inside proxyReqPathResolver => ",
           req.method,
           "\nREQ HEADERS inside proxyReqPathResolver => ",
-          req.headers
+          req.headers,
+          "\nRAW HEADERS inside proxyReqOptDecorator => ", req['rawHeaders'].join("=======")
         );
       }
       return `${req.url.split("/uidai-proxy")[1]}`;
     },
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
-      console.log("\n\nRAW HEADERS inside proxyReqOptDecorator => ", proxyReqOpts['rawHeaders']);
       return proxyReqOpts;
     },
     proxyErrorHandler: function(err, res, next) {
