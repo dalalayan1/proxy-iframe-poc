@@ -108,7 +108,8 @@ app.get(
       return `${req.url.split("/uidai-proxy")[1]}`;
     },
     proxyReqOptDecorator: function(req, srcReq) {
-      const modifiedReq = Object.assign({}, req.headers, {
+      let modifiedReq = req;
+      modifiedReq.headers = Object.assign({}, req.headers, {
         "referer": "https://resident.uidai.gov.in",
         "host": "resident.uidai.gov.in",
         "x-forwarded-for": "",
