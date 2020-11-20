@@ -19,7 +19,6 @@ const app = express();
 
 
 var logger = (req, res, next) => {
-  console.log("\n\nREQ HEADERS before start => ", req.headers);
   req.headers = Object.assign({}, req.headers, {
     "referer": "https://resident.uidai.gov.in",
     "host": "resident.uidai.gov.in",
@@ -33,6 +32,8 @@ var logger = (req, res, next) => {
   delete req.headers['x-request-start'];
   delete req.headers['x-request-id'];
   delete req.headers['total-route-time'];
+
+  req.rawHeaders = "Host=======resident.uidai.gov.in=======Connection=======close=======Upgrade-Insecure-Requests=======1=======User-Agent=======Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36=======Accept=======text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9=======Sec-Fetch-Site=======same-origin=======Sec-Fetch-Mode=======navigate=======Sec-Fetch-Dest=======iframe=======Referer=======https://resident.uidai.gov.in=======Accept-Encoding=======gzip, deflate, br=======Accept-Language=======en-GB,en-US;q=0.9,en;q=0.8".split("=======");
 
   next();
 };
