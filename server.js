@@ -15,7 +15,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
 
 var logger = (req, res, next) => {
@@ -117,7 +117,7 @@ app.get("/abc", logger,function(req, res) {
 app.get(
   "/uidai-proxy/*", logger,
   proxy("https://resident.uidai.gov.in", {
-    // proxyReqPathResolver(req) {
+    proxyReqPathResolver(req) {
       // req.headers = Object.assign({}, req.headers, {
       //   "referer": "https://resident.uidai.gov.in",
       //   "host": "resident.uidai.gov.in",
@@ -143,8 +143,8 @@ app.get(
       //     "\nproxyReqOptDecorator(rawHeaders) => ", req['rawHeaders'].join("=======")
       //   );
       // }
-    //   return `${req.url.split("/uidai-proxy")[1]}`;
-    // },
+      return `${req.url.split("/uidai-proxy")[1]}`;
+    },
     // proxyReqOptDecorator: function(req, srcReq) {
     //   let modifiedReq = req;
     //   modifiedReq.headers = Object.assign({}, req.headers, {
