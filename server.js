@@ -105,18 +105,18 @@ app.get(
   "/uidai-proxy/*", logger,
   proxy("https://resident.uidai.gov.in", {
     proxyReqPathResolver(req) {
-      req.headers = Object.assign({}, req.headers, {
-        "referer": "https://resident.uidai.gov.in",
-        "host": "resident.uidai.gov.in",
-        "x-forwarded-for": "",
-        "x-forwarded-port": "",
-        "x-request-id": "",
-        "x-forwarded-proto": "",
-        "via": "",
-        "connect-time": "",
-        "x-request-start": "",
-        "total-route-time": ""
-      });
+      // req.headers = Object.assign({}, req.headers, {
+      //   "referer": "https://resident.uidai.gov.in",
+      //   "host": "resident.uidai.gov.in",
+      //   "x-forwarded-for": "",
+      //   "x-forwarded-port": "",
+      //   "x-request-id": "",
+      //   "x-forwarded-proto": "",
+      //   "via": "",
+      //   "connect-time": "",
+      //   "x-request-start": "",
+      //   "total-route-time": ""
+      // });
       if (req.url.includes("offline-kyc")) {
         console.log(
           "\n\nproxyReqPathResolver(remoteAddress) => ",
