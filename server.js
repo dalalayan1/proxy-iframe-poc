@@ -109,10 +109,10 @@ app.get(
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
       return proxyReqOpts;
     },
-    proxyErrorHandler: function(err, res, next) {
-      console.log("\n\nOKYC RESPONSE ERROR => ", err);
-      next(err);
-    },
+    // proxyErrorHandler: function(err, res, next) {
+    //   console.log("\n\nOKYC RESPONSE ERROR => ", err);
+    //   next(err);
+    // },
     userResDecorator: function(proxyRes, proxyResData, req, res) {
       if (req.url.includes("offline-kyc")) {
         console.log(
