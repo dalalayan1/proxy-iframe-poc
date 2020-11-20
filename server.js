@@ -17,49 +17,6 @@ const app = express();
 
 // app.use(cors());
 
-app.get(
-  "/uidai-proxy/*",
-  proxy("https://resident.uidai.gov.in", {
-    proxyReqPathResolver(req) {
-      if (req.url.includes("offline-kyc")) {
-        console.log(
-          "\n\nREQ IP inside proxyReqPathResolver(remoteAddress) => ",
-          req.connection.remoteAddress,
-          "\nREQ IP inside proxyReqPathResolver(RequestIp) => ",
-          RequestIp.getClientIp(req),
-          "\nREQ METHOD inside proxyReqPathResolver => ",
-          req.method,
-          "\nREQ HEADERS inside proxyReqPathResolver => ",
-          req.headers
-        );
-      }
-      return `${req.url.split("/uidai-proxy")[1]}`;
-    },
-    proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
-      return proxyReqOpts;
-    },
-    proxyErrorHandler: function(err, res, next) {
-      console.log("\n\nOKYC RESPONSE ERROR => ", err);
-      next(err);
-    },
-    userResDecorator: function(proxyRes, proxyResData, req, res) {
-      if (req.url.includes("offline-kyc")) {
-        console.log(
-          "\n\nREQ IP inside userResDecorator(remoteAddress) => ",
-          req.connection.remoteAddress,
-          "\nREQ IP inside userResDecorator(RequestIp) => ",
-          RequestIp.getClientIp(req),
-          "\nREQ METHOD inside userResDecorator => ",
-          req.method,
-          "\nREQ HEADERS inside userResDecorator => ",
-          req.headers
-        );
-      }
-      return proxyResData;
-    }
-  })
-);
-
 
 var logger = (req, res, next) => {
   // console.log("\n\n=======================\nREQ IP => ", req.connection.remoteAddress, "\nREQ URL => ", req.url, "\nREQ METHOD => ", req.method, "\nREQ HEADERS => ", req.headers);
@@ -130,6 +87,49 @@ app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 //   next();
 // });
+
+app.get(
+  "/uidai-proxy/*",
+  proxy("https://resident.uidai.gov.in", {
+    proxyReqPathResolver(req) {
+      if (req.url.includes("offline-kyc")) {
+        console.log(
+          "\n\nREQ IP inside proxyReqPathResolver(remoteAddress) => ",
+          req.connection.remoteAddress,
+          "\nREQ IP inside proxyReqPathResolver(RequestIp) => ",
+          RequestIp.getClientIp(req),
+          "\nREQ METHOD inside proxyReqPathResolver => ",
+          req.method,
+          "\nREQ HEADERS inside proxyReqPathResolver => ",
+          req.headers
+        );
+      }
+      return `${req.url.split("/uidai-proxy")[1]}`;
+    },
+    proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
+      return proxyReqOpts;
+    },
+    proxyErrorHandler: function(err, res, next) {
+      console.log("\n\nOKYC RESPONSE ERROR => ", err);
+      next(err);
+    },
+    userResDecorator: function(proxyRes, proxyResData, req, res) {
+      if (req.url.includes("offline-kyc")) {
+        console.log(
+          "\n\nREQ IP inside userResDecorator(remoteAddress) => ",
+          req.connection.remoteAddress,
+          "\nREQ IP inside userResDecorator(RequestIp) => ",
+          RequestIp.getClientIp(req),
+          "\nREQ METHOD inside userResDecorator => ",
+          req.method,
+          "\nREQ HEADERS inside userResDecorator => ",
+          req.headers
+        );
+      }
+      return proxyResData;
+    }
+  })
+);
 
 app.post('/uidai-proxy/*', logger, proxy('https://resident.uidai.gov.in', {
     proxyReqPathResolver(req) {
