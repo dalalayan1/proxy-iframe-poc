@@ -22,16 +22,17 @@ var logger = (req, res, next) => {
   console.log("\n\nREQ HEADERS before start => ", req.headers);
   req.headers = Object.assign({}, req.headers, {
     "referer": "https://resident.uidai.gov.in",
-    "host": "resident.uidai.gov.in",
-    "x-forwarded-for": "",
-    "x-forwarded-port": "",
-    "x-request-id": "",
-    "x-forwarded-proto": "",
-    "via": "",
-    "connect-time": "",
-    "x-request-start": "",
-    "total-route-time": ""
+    "host": "resident.uidai.gov.in"
   });
+  delete req.headers.via;
+  delete req.headers['connect-time'];
+  delete req.headers['x-forwarded-for'];
+  delete req.headers['x-forwarded-proto'];
+  delete req.headers['x-forwarded-port'];
+  delete req.headers['x-request-start'];
+  delete req.headers['x-request-id'];
+  delete req.headers['total-route-time'];
+
   next();
 };
 
