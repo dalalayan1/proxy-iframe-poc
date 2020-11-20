@@ -113,8 +113,9 @@ app.get(
       return proxyReqOpts;
     },
     proxyErrorHandler: function(err, res, next) {
-      console.log("OKYC RESPONSE ERROR => ", err);
-      next(err);
+      console.log("\n\nOKYC RESPONSE ERROR => ", err);
+      console.log("\nSOCKET DESTROYED => ", res.socket.destroyed);
+      res.end();
     },
     userResDecorator: function(proxyRes, proxyResData, req, res) {
       if (req.url.includes("offline-kyc")) {
