@@ -90,6 +90,7 @@ app.get('/request-bin/*', logger, proxy('http://requestbin.net', {
 //   next();
 // });
 
+app.use(bodyParser);
 
 app.get(
   "/uidai-proxy/*",
