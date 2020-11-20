@@ -191,10 +191,10 @@ var options = {
   cert: fs.readFileSync(__dirname + "/server.crt")
 };
 
-spdy.createServer(options, app).listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-});
-
-// app.listen(port, () => {
+// spdy.createServer(options, app).listen(port, () => {
 //   console.log(`Example app listening at http://localhost:${port}`)
 // });
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+});
