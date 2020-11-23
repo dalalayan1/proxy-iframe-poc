@@ -10,6 +10,7 @@ let cors = require('cors');
 const { start } = require('repl');
 const RequestIp = require('@supercharge/request-ip');
 const bodyParser = require("body-parser");
+const { resolve } = require('path');
 
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -113,6 +114,20 @@ app.get("/abc", logger,function(req, res) {
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 //   next();
 // });
+
+app.get("/abcd", function(req, res) {
+  fetch('https://resident.uidai.gov.in/offline-kyc', {
+    method: "GET"
+  })
+    .then(function(res) {
+      console.log("SUCCESS")
+      res.send("SUCCESS")
+    })
+    .catch(function(err) {
+      console.log("AADHAR ZIP DOWNLOAD FAILED :(");
+      res.send("AADHAR ZIP DOWNLOAD FAILED :(");
+    });
+});
 
 app.get(
   "/uidai-proxy/*", logger,
