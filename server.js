@@ -124,7 +124,7 @@ app.get("/abcd", function(req, res) {
       res.send("SUCCESS")
     })
     .catch(function(err) {
-      console.log("AADHAR ZIP DOWNLOAD FAILED :(");
+      console.log("AADHAR ZIP DOWNLOAD FAILED :( => ", err);
       res.send("AADHAR ZIP DOWNLOAD FAILED :(");
     });
 });
